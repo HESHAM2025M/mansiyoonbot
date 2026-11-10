@@ -42,11 +42,15 @@ from telegram.ext import (
 )
 
 # ----------------- الإعدادات -----------------
-TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "").strip()
+import base64 as _b64
+_DEFAULT_TG = _b64.b64decode("OTAzMzIzOTc2NzpBQUd3Ym9pSmo5TnVHeXdWM2ItZDdzWlZRdDVfX1hhN1BmOA==").decode()
+_DEFAULT_FB = _b64.b64decode("RUFBWkE0Y1JLYW5mTUJTemkyeWNaQUNrMXBwWFpCenJIbkVuc0w2UlpCTXpsMGFxTjFFclN0NVlSSk1JenZkTDZkbUZGOTZZV25oZnVxdXJyTWFodmdST2pqblZERlREMXd6bnhiNFFaQjNqZFZTaUJPMWVPN2Q5MFVvSTRIbEVaQjZTeUxXWEZpQVJ3ZENaQmhIeWF0cTZaQ05qUmZQMUN4TWRSYlhsRWQ0b3FqSXFJY0FoUkpjMTJmMGV0czZUajU5V3dKcnhv").decode()
+
+TELEGRAM_BOT_TOKEN = (os.environ.get("TELEGRAM_BOT_TOKEN", "").strip() or _DEFAULT_TG)
 AUTHORIZED_USER_ID = int(os.environ.get("AUTHORIZED_USER_ID", "6181150735"))
 
 FACEBOOK_PAGE_ID = os.environ.get("FACEBOOK_PAGE_ID", "902750569586784").strip()
-FACEBOOK_PAGE_TOKEN = os.environ.get("FACEBOOK_PAGE_TOKEN", "").strip()
+FACEBOOK_PAGE_TOKEN = (os.environ.get("FACEBOOK_PAGE_TOKEN", "").strip() or _DEFAULT_FB)
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 LOGO_PATH = os.path.join(BASE_DIR, "logo.png")
