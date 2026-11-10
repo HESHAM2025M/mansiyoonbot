@@ -220,7 +220,7 @@ def get_font(size: int):
     for fp in candidates:
         if os.path.exists(fp):
             try:
-                return ImageFont.truetype(fp, size)
+                return ImageFont.truetype(fp, size, layout_engine=ImageFont.Layout.BASIC)
             except Exception:
                 pass
     return ImageFont.load_default()
