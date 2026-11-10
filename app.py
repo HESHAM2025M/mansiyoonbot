@@ -20,9 +20,12 @@ import urllib.parse
 import xml.etree.ElementTree as ET
 
 import requests
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont, features as pil_features
 import arabic_reshaper
 from bidi.algorithm import get_display
+
+HAS_RAQM = pil_features.check("raqm")
+print(f"Pillow RAQM Arabic Engine active: {HAS_RAQM}")
 
 from telegram.request import HTTPXRequest
 from telegram import (
@@ -86,6 +89,8 @@ MAIN_MENU_KEYBOARD = ReplyKeyboardMarkup(
 )
 
 def format_arabic(text: str) -> str:
+    if HAS_RAQM:
+        return text
     reshaped = arabic_reshaper.reshape(text)
     return get_display(reshaped)
 
@@ -217,10 +222,11 @@ def get_font(size: int):
         os.path.join(BASE_DIR, "font.ttf"),
         "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
     ]
+    engine = ImageFont.Layout.RAQM if HAS_RAQM else ImageFont.Layout.BASIC
     for fp in candidates:
         if os.path.exists(fp):
             try:
-                return ImageFont.truetype(fp, size, layout_engine=ImageFont.Layout.BASIC)
+                return ImageFont.truetype(fp, size, layout_engine=engine)
             except Exception:
                 pass
     return ImageFont.load_default()
