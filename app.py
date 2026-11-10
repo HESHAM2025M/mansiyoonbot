@@ -54,7 +54,9 @@ FACEBOOK_PAGE_TOKEN = (os.environ.get("FACEBOOK_PAGE_TOKEN", "").strip() or _DEF
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 LOGO_PATH = os.path.join(BASE_DIR, "logo.png")
-FONT_FILE = os.path.join(BASE_DIR, "font.ttf")
+FONT_FILE = os.path.join(BASE_DIR, "font.otf")
+if not os.path.exists(FONT_FILE):
+    FONT_FILE = os.path.join(BASE_DIR, "font.ttf")
 
 FFMPEG_PATH = "ffmpeg"
 FFPROBE_PATH = "ffprobe"
@@ -70,16 +72,7 @@ user_states = {}
 
 # تحميل خط عربي تلقائياً إذا لم يتوفر
 def ensure_font():
-    if not os.path.exists(FONT_FILE):
-        try:
-            print("⏳ جاري تنزيل خط عربي أنيق للتصاميم...")
-            url = "https://raw.githubusercontent.com/google/fonts/main/ofl/cairo/Cairo-Bold.ttf"
-            urllib.request.urlretrieve(url, FONT_FILE)
-            print("✅ تم تنزيل الخط بنجاح.")
-        except Exception as e:
-            print("Font download notice:", e)
-
-ensure_font()
+    pass
 
 # لوحة المفاتيح التفاعلية الدائمة أسفل الشاشة
 MAIN_MENU_KEYBOARD = ReplyKeyboardMarkup(
@@ -219,11 +212,17 @@ def paste_logo(card: Image.Image, pad: int = 60, target_w: int = 175) -> None:
         print(f"Error drawing logo: {e}")
 
 def get_font(size: int):
-    if os.path.exists(FONT_FILE):
-        try:
-            return ImageFont.truetype(FONT_FILE, size)
-        except Exception:
-            pass
+    candidates = [
+        os.path.join(BASE_DIR, "font.otf"),
+        os.path.join(BASE_DIR, "font.ttf"),
+        "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
+    ]
+    for fp in candidates:
+        if os.path.exists(fp):
+            try:
+                return ImageFont.truetype(fp, size)
+            except Exception:
+                pass
     return ImageFont.load_default()
 
 # ----------------- قوالب التصاميم -----------------
